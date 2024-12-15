@@ -52,13 +52,17 @@
       border-radius: 10px;
       visibility: hidden;
     }
-    .result {
+    .result-section {
       margin-top: 20px;
       padding: 10px;
       background-color: #f9f9f9;
       border-radius: 8px;
-      display: none;
+      display: block;
       text-align: left;
+    }
+    .result-item {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
     }
     .dropdown {
       margin: 10px auto;
@@ -74,24 +78,10 @@
 <body>
   <div class="card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Christmas_tree.svg/1024px-Christmas_tree.svg.png" class="tree" alt="Christmas Tree">
-    <h1>Merry Christmas!</h1>
-    <p>Select your name and scratch below to reveal your prize:</p>
-    <div class="dropdown">
-      <select id="employeeName">
-        <option value="" selected disabled>Select your name</option>
-        <option>FRANCDON</option>
-        <option>CZARMRAN</option>
-        <option>BRYARMAT</option>
-        <option>CHELOSAN</option>
-        <option>ANNAMALI</option>
-        <option>KRISTCHA</option>
-        <option>CARRIGAR</option>
-        <option>BEAISON</option>
-        <option>MIKECHAI</option>
-        <option>DALEAAPA</option>
-        <option>ANDRESER</option>
-        <option>ATILLVEL</option>
-      </select>
+    <h1>MERRY CHRISTMAS!</h1>
+    <p>Enter your name below and scratch to reveal your prize:</p>
+    <div class="input-section">
+      <input type="text" id="employeeName" placeholder="Enter your name">
     </div>
     <div class="scratch-area" onclick="revealPrize()">
       <div class="scratch-cover"></div>
@@ -99,10 +89,10 @@
     </div>
     <p>Wishing you a joyful holiday season!</p>
 
-    <!-- Results section -->
-    <div class="result" id="result">
-      <p id="resultMessage"></p>
-      <p><strong>Scratched on:</strong> <span id="scratchDate"></span></p>
+    <!-- Result section -->
+    <div class="result-section" id="resultSection">
+      <h2>Scratch Results:</h2>
+      <div id="resultsList"></div>
     </div>
   </div>
 
@@ -110,12 +100,13 @@
     const prizes = [500, 400, 300, 300, 200, 200, 200, 150, 150, 150, 150, 150];
     const prizePool = [...prizes]; // Clone the prize array to track used prizes
     const employeeKey = 'employeeScratchOff';
+    const results = []; // To store the result of all scratched prizes
 
     function revealPrize() {
-      const selectedName = document.getElementById('employeeName').value;
+      const selectedName = document.getElementById('employeeName').value.trim();
 
       if (!selectedName) {
-        alert('Please select your name before scratching!');
+        alert('Please enter your name before scratching!');
         return;
       }
 
@@ -137,19 +128,34 @@
       const randomIndex = Math.floor(Math.random() * prizePool.length);
       const randomPrize = prizePool.splice(randomIndex, 1)[0];
 
+      // Reveal the prize
       document.querySelector('.scratch-cover').style.visibility = 'hidden';
       document.getElementById('prize').style.visibility = 'visible';
       document.getElementById('prize').textContent = `₱${randomPrize}`; // PHP currency symbol
 
-      // Display the result message with the current date
+      // Add the result to the results array
       const date = new Date();
       const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('resultMessage').textContent = `Congratulations, ${selectedName}! You've won ₱${randomPrize}.`;
-      document.getElementById('scratchDate').textContent = formattedDate;
+      results.push({ name: selectedName, prize: randomPrize, date: formattedDate });
+
+      // Update the results section
+      updateResults();
 
       // Save the user's selection
       localStorage.setItem(employeeKey, selectedName);
+    }
+
+    // Function to update and display the results
+    function updateResults() {
+      const resultsList = document.getElementById('resultsList');
+      resultsList.innerHTML = ''; // Clear the previous list
+
+      results.forEach(result => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.textContent = `${result.name} won ₱${result.prize} on ${result.date}`;
+        resultsList.appendChild(resultItem);
+      });
     }
   </script>
 </body>
