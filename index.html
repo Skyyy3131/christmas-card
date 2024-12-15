@@ -52,6 +52,14 @@
       border-radius: 10px;
       visibility: hidden;
     }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      display: none;
+      text-align: left;
+    }
     .dropdown {
       margin: 10px auto;
     }
@@ -90,6 +98,12 @@
       <div class="prize" id="prize"></div>
     </div>
     <p>Wishing you a joyful holiday season!</p>
+
+    <!-- Results section -->
+    <div class="result" id="result">
+      <p id="resultMessage"></p>
+      <p><strong>Scratched on:</strong> <span id="scratchDate"></span></p>
+    </div>
   </div>
 
   <script>
@@ -126,6 +140,13 @@
       document.querySelector('.scratch-cover').style.visibility = 'hidden';
       document.getElementById('prize').style.visibility = 'visible';
       document.getElementById('prize').textContent = `₱${randomPrize}`; // PHP currency symbol
+
+      // Display the result message with the current date
+      const date = new Date();
+      const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('resultMessage').textContent = `Congratulations, ${selectedName}! You've won ₱${randomPrize}.`;
+      document.getElementById('scratchDate').textContent = formattedDate;
 
       // Save the user's selection
       localStorage.setItem(employeeKey, selectedName);
