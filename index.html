@@ -165,26 +165,26 @@
         date: formattedDate
       };
 
-     fetch('https://script.google.com/macros/s/AKfycbx8sN1nXhz_CN9SKXQMT9hnO6lMf7mcEQN2tT6IFKQyQMoGxbH6Du6jn-ProVr_DIXa9A/exec', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(resultData)
-})
-.then(response => {
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-  return response.json();
-})
-.then(data => {
-  console.log('Success:', data);
-})
-.catch((error) => {
-  console.error('Error:', error);
-});
-
+      // POST request to Google Apps Script Web App with added error handling
+      fetch('https://script.google.com/macros/s/AKfycbx8sN1nXhz_CN9SKXQMT9hnO6lMf7mcEQN2tT6IFKQyQMoGxbH6Du6jn-ProVr_DIXa9A/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resultData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 
       // Save the user's selection to prevent re-scratching
       localStorage.setItem(employeeKey, selectedName);
