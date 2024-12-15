@@ -158,6 +158,11 @@
     // Update the results section
     updateResults();
 
+    // Show loading feedback while sending the request
+    const loadingMessage = document.createElement('p');
+    loadingMessage.textContent = 'Saving your result...';
+    document.body.appendChild(loadingMessage);
+
     // Send the result to Google Sheets
     const resultData = {
       name: selectedName,
@@ -165,7 +170,6 @@
       date: formattedDate
     };
 
-    // Send POST request to Google Apps Script Web App URL
     fetch('https://script.google.com/macros/s/AKfycbx8sN1nXhz_CN9SKXQMT9hnO6lMf7mcEQN2tT6IFKQyQMoGxbH6Du6jn-ProVr_DIXa9A/exec', {
       method: 'POST',
       headers: {
@@ -176,9 +180,11 @@
     .then(response => response.json())
     .then(data => {
       console.log('Success:', data);
+      loadingMessage.textContent = 'Result saved successfully!';
     })
     .catch((error) => {
       console.error('Error:', error);
+      loadingMessage.textContent = 'There was an error saving your result.';
     });
 
     // Save the user's selection to prevent re-scratching
@@ -187,7 +193,7 @@
 
   // Load and display results when the page is loaded
   window.onload = updateResults;
-</script>
+  </script>
 
 </body>
 </html>
