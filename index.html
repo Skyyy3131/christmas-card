@@ -97,73 +97,97 @@
   </div>
 
   <script>
-    const prizes = [500, 400, 300, 300, 200, 200, 200, 150, 150, 150, 150, 150];
-    const prizePool = [...prizes]; // Clone the prize array to track used prizes
-    const employeeKey = 'employeeScratchOff';
-    const resultsKey = 'scratchResults'; // Key to store results in localStorage
-    let results = JSON.parse(localStorage.getItem(resultsKey)) || []; // Get saved results from localStorage
+  const prizes = [500, 400, 300, 300, 200, 200, 200, 150, 150, 150, 150, 150];
+  const prizePool = [...prizes]; // Clone the prize array to track used prizes
+  const employeeKey = 'employeeScratchOff';
+  const resultsKey = 'scratchResults'; // Key to store results in localStorage
+  let results = JSON.parse(localStorage.getItem(resultsKey)) || []; // Get saved results from localStorage
 
-    // Function to update and display the results
-    function updateResults() {
-      const resultsList = document.getElementById('resultsList');
-      resultsList.innerHTML = ''; // Clear the previous list
+  // Function to update and display the results
+  function updateResults() {
+    const resultsList = document.getElementById('resultsList');
+    resultsList.innerHTML = ''; // Clear the previous list
 
-      results.forEach(result => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        resultItem.textContent = `${result.name} won ₱${result.prize} on ${result.date}`;
-        resultsList.appendChild(resultItem);
-      });
+    results.forEach(result => {
+      const resultItem = document.createElement('div');
+      resultItem.className = 'result-item';
+      resultItem.textContent = `${result.name} won ₱${result.prize} on ${result.date}`;
+      resultsList.appendChild(resultItem);
+    });
+  }
+
+  function revealPrize() {
+    const selectedName = document.getElementById('employeeName').value.trim();
+
+    if (!selectedName) {
+      alert('Please enter your name before scratching!');
+      return;
     }
 
-    function revealPrize() {
-      const selectedName = document.getElementById('employeeName').value.trim();
+    // Check if this user has already scratched
+    const scratched = localStorage.getItem(employeeKey);
 
-      if (!selectedName) {
-        alert('Please enter your name before scratching!');
-        return;
-      }
-
-      // Check if this user has already scratched
-      const scratched = localStorage.getItem(employeeKey);
-
-      if (scratched === selectedName) {
-        alert('You have already scratched your card. Thank you!');
-        return;
-      }
-
-      // Ensure there are prizes left
-      if (prizePool.length === 0) {
-        alert('All prizes have been claimed!');
-        return;
-      }
-
-      // Generate a random prize from the remaining pool and reveal it
-      const randomIndex = Math.floor(Math.random() * prizePool.length);
-      const randomPrize = prizePool.splice(randomIndex, 1)[0];
-
-      // Reveal the prize
-      document.querySelector('.scratch-cover').style.visibility = 'hidden';
-      document.getElementById('prize').style.visibility = 'visible';
-      document.getElementById('prize').textContent = `₱${randomPrize}`; // PHP currency symbol
-
-      // Add the result to the results array
-      const date = new Date();
-      const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      results.push({ name: selectedName, prize: randomPrize, date: formattedDate });
-
-      // Save the updated results in localStorage
-      localStorage.setItem(resultsKey, JSON.stringify(results));
-
-      // Update the results section
-      updateResults();
-
-      // Save the user's selection to prevent re-scratching
-      localStorage.setItem(employeeKey, selectedName);
+    if (scratched === selectedName) {
+      alert('You have already scratched your card. Thank you!');
+      return;
     }
 
-    // Load and display results when the page is loaded
-    window.onload = updateResults;
-  </script>
+    // Ensure there are prizes left
+    if (prizePool.length === 0) {
+      alert('All prizes have been claimed!');
+      return;
+    }
+
+    // Generate a random prize from the remaining pool and reveal it
+    const randomIndex = Math.floor(Math.random() * prizePool.length);
+    const randomPrize = prizePool.splice(randomIndex, 1)[0];
+
+    // Reveal the prize
+    document.querySelector('.scratch-cover').style.visibility = 'hidden';
+    document.getElementById('prize').style.visibility = 'visible';
+    document.getElementById('prize').textContent = `₱${randomPrize}`; // PHP currency symbol
+
+    // Add the result to the results array
+    const date = new Date();
+    const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    results.push({ name: selectedName, prize: randomPrize, date: formattedDate });
+
+    // Save the updated results in localStorage
+    localStorage.setItem(resultsKey, JSON.stringify(results));
+
+    // Update the results section
+    updateResults();
+
+    // Send the result to Google Sheets
+    const resultData = {
+      name: selectedName,
+      prize: randomPrize,
+      date: formattedDate
+    };
+
+    // Send POST request to Google Apps Script Web App URL
+    fetch('https://script.google.com/macros/s/AKfycbx8sN1nXhz_CN9SKXQMT9hnO6lMf7mcEQN2tT6IFKQyQMoGxbH6Du6jn-ProVr_DIXa9A/exec', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(resultData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+
+    // Save the user's selection to prevent re-scratching
+    localStorage.setItem(employeeKey, selectedName);
+  }
+
+  // Load and display results when the page is loaded
+  window.onload = updateResults;
+</script>
+
 </body>
 </html>
