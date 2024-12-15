@@ -78,7 +78,7 @@
 <body>
   <div class="card">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Christmas_tree.svg/1024px-Christmas_tree.svg.png" class="tree" alt="Christmas Tree">
-    <h1>MERRY CHRISTMAS!</h1>
+    <h1>Merry Christmas!</h1>
     <p>Enter your name below and scratch to reveal your prize:</p>
     <div class="input-section">
       <input type="text" id="employeeName" placeholder="Enter your name">
@@ -100,7 +100,21 @@
     const prizes = [500, 400, 300, 300, 200, 200, 200, 150, 150, 150, 150, 150];
     const prizePool = [...prizes]; // Clone the prize array to track used prizes
     const employeeKey = 'employeeScratchOff';
-    const results = []; // To store the result of all scratched prizes
+    const resultsKey = 'scratchResults'; // Key to store results in localStorage
+    let results = JSON.parse(localStorage.getItem(resultsKey)) || []; // Get saved results from localStorage
+
+    // Function to update and display the results
+    function updateResults() {
+      const resultsList = document.getElementById('resultsList');
+      resultsList.innerHTML = ''; // Clear the previous list
+
+      results.forEach(result => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.textContent = `${result.name} won ₱${result.prize} on ${result.date}`;
+        resultsList.appendChild(resultItem);
+      });
+    }
 
     function revealPrize() {
       const selectedName = document.getElementById('employeeName').value.trim();
@@ -138,25 +152,18 @@
       const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
       results.push({ name: selectedName, prize: randomPrize, date: formattedDate });
 
+      // Save the updated results in localStorage
+      localStorage.setItem(resultsKey, JSON.stringify(results));
+
       // Update the results section
       updateResults();
 
-      // Save the user's selection
+      // Save the user's selection to prevent re-scratching
       localStorage.setItem(employeeKey, selectedName);
     }
 
-    // Function to update and display the results
-    function updateResults() {
-      const resultsList = document.getElementById('resultsList');
-      resultsList.innerHTML = ''; // Clear the previous list
-
-      results.forEach(result => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        resultItem.textContent = `${result.name} won ₱${result.prize} on ${result.date}`;
-        resultsList.appendChild(resultItem);
-      });
-    }
+    // Load and display results when the page is loaded
+    window.onload = updateResults;
   </script>
 </body>
 </html>
