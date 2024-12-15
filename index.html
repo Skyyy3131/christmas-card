@@ -52,21 +52,6 @@
       border-radius: 10px;
       visibility: hidden;
     }
-    .result-section {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      display: block;
-      text-align: left;
-    }
-    .result-item {
-      padding: 5px;
-      border-bottom: 1px solid #ddd;
-    }
-    .dropdown {
-      margin: 10px auto;
-    }
     .tree {
       position: absolute;
       top: -50px;
@@ -88,12 +73,6 @@
       <div class="prize" id="prize"></div>
     </div>
     <p>Wishing you a joyful holiday season!</p>
-
-    <!-- Result section -->
-    <div class="result-section" id="resultSection">
-      <h2>Scratch Results:</h2>
-      <div id="resultsList"></div>
-    </div>
   </div>
 
   <script>
@@ -102,19 +81,6 @@
     const employeeKey = 'employeeScratchOff';
     const resultsKey = 'scratchResults'; // Key to store results in localStorage
     let results = JSON.parse(localStorage.getItem(resultsKey)) || []; // Get saved results from localStorage
-
-    // Function to update and display the results
-    function updateResults() {
-      const resultsList = document.getElementById('resultsList');
-      resultsList.innerHTML = ''; // Clear the previous list
-
-      results.forEach(result => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        resultItem.textContent = `${result.name} won ₱${result.prize} on ${result.date}`;
-        resultsList.appendChild(resultItem);
-      });
-    }
 
     function revealPrize() {
       const selectedName = document.getElementById('employeeName').value.trim();
@@ -150,14 +116,7 @@
       // Add the result to the results array
       const date = new Date();
       const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      results.push({ name: selectedName, prize: randomPrize, date: formattedDate });
-
-      // Save the updated results in localStorage
-      localStorage.setItem(resultsKey, JSON.stringify(results));
-
-      // Update the results section
-      updateResults();
-
+      
       // Send the result to Google Sheets
       const resultData = {
         name: selectedName,
@@ -189,9 +148,6 @@
       // Save the user's selection to prevent re-scratching
       localStorage.setItem(employeeKey, selectedName);
     }
-
-    // Load and display results when the page is loaded
-    window.onload = updateResults;
   </script>
 
 </body>
