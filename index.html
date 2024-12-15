@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scratch-Off Christmas Card</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+    }
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .scratch-area {
+      position: relative;
+      width: 300px;
+      height: 100px;
+      margin: 20px auto;
+      background: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .scratch-cover {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #bbb;
+      z-index: 2;
+    }
+    .prize {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4caf50;
+      background: #fff;
+      border-radius: 10px;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Merry Christmas!</h1>
+    <p>Scratch below to reveal your prize:</p>
+    <div class="scratch-area" onclick="revealPrize()">
+      <div class="scratch-cover"></div>
+      <div class="prize" id="prize"></div>
+    </div>
+    <p>Wishing you a joyful holiday season!</p>
+  </div>
+
+  <script>
+    const prizes = [500, 400, 200, 100];
+    const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+
+    function revealPrize() {
+      document.querySelector('.scratch-cover').style.visibility = 'hidden';
+      document.getElementById('prize').style.visibility = 'visible';
+      document.getElementById('prize').textContent = `$${randomPrize}`;
+    }
+  </script>
+</body>
+</html>
