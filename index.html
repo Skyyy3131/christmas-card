@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(to bottom, #eaf7ff, #d0f0d7);
+      background: #f0f8ff;
       text-align: center;
       padding: 20px;
     }
@@ -18,18 +18,7 @@
       border-radius: 10px;
       padding: 20px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border: 2px solid #ff6b6b;
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .header img {
-      width: 50px;
-      height: 50px;
-      margin-right: 10px;
+      position: relative;
     }
     .scratch-area {
       position: relative;
@@ -40,7 +29,6 @@
       border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
-      border: 2px dashed #ff6b6b;
     }
     .scratch-cover {
       position: absolute;
@@ -64,43 +52,70 @@
       border-radius: 10px;
       visibility: hidden;
     }
-    footer {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #555;
+    .dropdown {
+      margin: 10px auto;
+    }
+    .tree {
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="header">
-      <img src="https://cdn-icons-png.flaticon.com/512/873/873120.png" alt="Christmas Tree">
-      <h1 style="color: #ff6b6b;">Merry Christmas!</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Christmas_tree.svg/1024px-Christmas_tree.svg.png" class="tree" alt="Christmas Tree">
+    <h1>Merry Christmas!</h1>
+    <p>Select your name and scratch below to reveal your prize:</p>
+    <div class="dropdown">
+      <select id="employeeName">
+        <option value="" selected disabled>Select your name</option>
+        <option>FRANCDON</option>
+        <option>CZARMRAN</option>
+        <option>BRYARMAT</option>
+        <option>CHELOSAN</option>
+        <option>ANNAMALI</option>
+        <option>KRISTCHA</option>
+        <option>CARRIGAR</option>
+        <option>BEAISON</option>
+        <option>MIKECHAI</option>
+        <option>DALEAAPA</option>
+        <option>ANDRESER</option>
+        <option>ATILLVEL</option>
+      </select>
     </div>
-    <p>Scratch below to reveal your prize:</p>
-    <div class="scratch-area" id="scratchArea" onclick="revealPrize()">
-      <div class="scratch-cover" id="scratchCover"></div>
+    <div class="scratch-area" onclick="revealPrize()">
+      <div class="scratch-cover"></div>
       <div class="prize" id="prize"></div>
     </div>
     <p>Wishing you a joyful holiday season!</p>
   </div>
 
-  <footer>Designed with holiday cheer! &#x1F384;</footer>
-
   <script>
-    const prizes = [500, 400, 200, 100]; // Prizes in Philippine Peso
+    const prizes = [50000, 40000, 20000, 10000]; // Prizes in PHP
     const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
-    let isScratched = false; // To prevent multiple scratches
+    const employeeKey = 'employeeScratchOff';
 
     function revealPrize() {
-      if (isScratched) return; // Prevent further interaction
+      const selectedName = document.getElementById('employeeName').value;
+      if (!selectedName) {
+        alert('Please select your name before scratching!');
+        return;
+      }
 
-      document.getElementById('scratchCover').style.visibility = 'hidden';
+      // Check if this user has already scratched
+      const scratched = localStorage.getItem(employeeKey);
+      if (scratched === selectedName) {
+        alert('You have already scratched your card. Thank you!');
+        return;
+      }
+
+      // Reveal the prize and store the user's selection
+      document.querySelector('.scratch-cover').style.visibility = 'hidden';
       document.getElementById('prize').style.visibility = 'visible';
-      document.getElementById('prize').textContent = `₱${randomPrize}`; // Display PHP currency
-
-      isScratched = true; // Mark as scratched
-      document.getElementById('scratchArea').style.cursor = 'not-allowed'; // Change cursor to indicate inactivity
+      document.getElementById('prize').textContent = `₱${randomPrize}`;
+      localStorage.setItem(employeeKey, selectedName);
     }
   </script>
 </body>
