@@ -93,7 +93,8 @@
   </div>
 
   <script>
-    const prizes = [500, 400, 200, 100]; // Prizes in PHP
+    const prizes = [500, 400, 300, 300, 200, 200, 200, 150, 150, 150, 150, 150];
+    const prizePool = [...prizes]; // Clone the prize array to track used prizes
     const employeeKey = 'employeeScratchOff';
 
     function revealPrize() {
@@ -112,8 +113,15 @@
         return;
       }
 
-      // Generate a random prize and reveal it
-      const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+      // Ensure there are prizes left
+      if (prizePool.length === 0) {
+        alert('All prizes have been claimed!');
+        return;
+      }
+
+      // Generate a random prize from the remaining pool and reveal it
+      const randomIndex = Math.floor(Math.random() * prizePool.length);
+      const randomPrize = prizePool.splice(randomIndex, 1)[0];
 
       document.querySelector('.scratch-cover').style.visibility = 'hidden';
       document.getElementById('prize').style.visibility = 'visible';
