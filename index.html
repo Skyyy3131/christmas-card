@@ -94,11 +94,11 @@
 
   <script>
     const prizes = [50000, 40000, 20000, 10000]; // Prizes in PHP
-    const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
     const employeeKey = 'employeeScratchOff';
 
     function revealPrize() {
       const selectedName = document.getElementById('employeeName').value;
+
       if (!selectedName) {
         alert('Please select your name before scratching!');
         return;
@@ -106,15 +106,20 @@
 
       // Check if this user has already scratched
       const scratched = localStorage.getItem(employeeKey);
+
       if (scratched === selectedName) {
         alert('You have already scratched your card. Thank you!');
         return;
       }
 
-      // Reveal the prize and store the user's selection
+      // Generate a random prize and reveal it
+      const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+
       document.querySelector('.scratch-cover').style.visibility = 'hidden';
       document.getElementById('prize').style.visibility = 'visible';
-      document.getElementById('prize').textContent = `₱${randomPrize}`;
+      document.getElementById('prize').textContent = `₱${randomPrize}`; // PHP currency symbol
+
+      // Save the user's selection
       localStorage.setItem(employeeKey, selectedName);
     }
   </script>
